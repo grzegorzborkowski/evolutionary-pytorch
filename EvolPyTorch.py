@@ -16,13 +16,15 @@ torch.set_default_tensor_type('torch.FloatTensor')
 
 #torch.manual_seed(7)
 
-dataPreprocessor = DataPreprocessor.Iris()
+dataPreprocessor = DataPreprocessor.Wine()
 train_X, test_X, train_y, test_y = dataPreprocessor.get_data()
+input_layer_size = dataPreprocessor.get_input_layer_size()
+output_layer_size = dataPreprocessor.get_output_layer_size()
 
 # the goal ('fitness') function to be maximized
 def evalOneMax(individual):
     print ("Evaluatio individual", individual)
-    model_factory = Models.ModelFactory()
+    model_factory = Models.ModelFactory(input_layer_size, output_layer_size)
     model = model_factory.get_model(individual)
     loss_fn = nn.CrossEntropyLoss()
 

@@ -1,11 +1,11 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
-N, D_in, H, D_out = 64, 4, 100, 3
+N, H = 64, 100
 
 class Model(nn.Module):
 
-    def __init__(self, individual, number_of_layers):
+    def __init__(self, individual, number_of_layers, D_in, D_out):
         super(Model, self).__init__()
         self.number_of_layers = number_of_layers
         self.individual = individual
@@ -30,10 +30,14 @@ class Model(nn.Module):
 
 class ModelFactory():
 
+    def __init__(self, D_in, D_out):
+        self.D_in = D_in
+        self.D_out = D_out
+
     def get_model(self, individual):
         ones = 0
         for elem in individual:
             if elem == 1:
                 ones += 1
         ones = max(ones, 1) # we can't have all zeros
-        return Model(individual, ones)
+        return Model(individual, ones, self.D_in, self.D_out)
