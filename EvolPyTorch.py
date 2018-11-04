@@ -8,49 +8,16 @@ import random
 import numpy
 import Models
 import DataPreprocessor
+import EvolutionaryToolboxFactory
 
 import random
-
-from deap import base
-from deap import creator
-from deap import tools
-
-creator.create("FitnessMax", base.Fitness, weights=(1.0,))
-creator.create("Individual", list, fitness=creator.FitnessMax)
-
-toolbox = base.Toolbox()
-
-# Attribute generator 
-#                      define 'attr_bool' to be an attribute ('gene')
-#                      which corresponds to integers sampled uniformly
-#                      from the range [0,1] (i.e. 0 or 1 with equal
-#                      probability)
-
-# toolbox.register("number_of_layers", random.randint, 1, 5)
-toolbox.register("attr_bool", random.randint, 0, 1)
-
-# Structure initializers
-#                         define 'individual' to be an individual
-#                         consisting of 100 'attr_bool' elements ('genes')
-
-#toolbox.register("individual", randIndividual)
-toolbox.register("individual", tools.initRepeat, creator.Individual,
-                 toolbox.attr_bool, random.randint(1, 10)) # number_of_layers
-
-# define the population to be a list of individuals
-toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 device = torch.device('cuda')
 torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
-# N is batch size; D_in is input dimension;
-# H is hidden dimension; D_out is output dimension.
-N, D_in, H, D_out = 64, 4, 100, 3
 torch.manual_seed(7)
 
-
 dataPreprocessor = DataPreprocessor.Iris()
-
 train_X, test_X, train_y, test_y = dataPreprocessor.get_data()
 
 # the goal ('fitness') function to be maximized
@@ -82,28 +49,11 @@ def evalOneMax(individual):
     print (accuracy)
     return accuracy,
 
-    #----------
-    # Operator registration
-    #----------
-    # register the goal / fitness function
-toolbox.register("evaluate", evalOneMax)
-
-    # register the crossover operator
-toolbox.register("mate", tools.cxTwoPoint)
-
-    # register a mutation operator with a probability to
-    # flip each attribute/gene of 0.05
-toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
-
-    # operator for selecting individuals for breeding the next
-    # generation: each individual of the current generation
-    # is replaced by the 'fittest' (best) of three individuals
-    # drawn randomly from the current generation.
-toolbox.register("select", tools.selTournament, tournsize=3)
-
-    #----------
 
 def main():
+    toolbox_factory = EvolutionaryToolboxFactory.EvolutionaryToolboxFactory()
+    toolbox = toolbox_factory.get_toolbox()
+    toolbox.register("evaluate", evalOneMax)
 
     # create an initial population of 300 individuals (where
     # each individual is a list of integers)
