@@ -7,40 +7,7 @@ import torch.nn.functional as F
 from deap import base, creator, tools, algorithms
 import random
 import numpy
-
-class Model(nn.Module):
-    def __init__(self, number_of_layers):
-        super(Model, self).__init__()
-        self.number_of_layers = number_of_layers
-
-    def forward(self, x):
-        x = F.relu((nn.Linear(D_in, H)(x)))
-
-        for i in range(self.number_of_layers):
-            x = F.relu(nn.Linear(H, H)(x))
-
-        x = F.softmax((nn.Linear(H, D_out)(x)))
-        return x
-
-
-class Model2(nn.Module):
-    def __init__(self):
-        super(Model2, self).__init__()
-        self.lin1 = nn.Linear(D_in, H)
-        self.lin2 = nn.Linear(H, D_out)
-
-    def forward(self, x):
-        x = F.relu(self.lin1(x))
-        return F.softmax(self.lin2(x))
-
-def create_model_from_individual(individual):
-    ones = 0
-    for elem in individual:
-        if elem == 1:
-            ones += 1
-    return Model(ones)
-# In[42]:
-
+import Models
 
 import random
 
@@ -93,7 +60,8 @@ test_y = torch.Tensor(test_y).long()
 
 # the goal ('fitness') function to be maximized
 def evalOneMax(individual):
-    model = create_model_from_individual(individual)
+    model_factory = Models.ModelFactory()
+    model = model_factory.get_model(individual)
     loss_fn = nn.CrossEntropyLoss()
 
     learning_rate = 0.001
