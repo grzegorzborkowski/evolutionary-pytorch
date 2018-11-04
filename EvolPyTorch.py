@@ -1,5 +1,4 @@
 import torch
-from sklearn.datasets import load_iris
 import torch.nn as nn
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 from sklearn.model_selection import train_test_split
@@ -8,6 +7,7 @@ from deap import base, creator, tools, algorithms
 import random
 import numpy
 import Models
+import DataPreprocessor
 
 import random
 
@@ -48,15 +48,10 @@ torch.set_default_tensor_type('torch.cuda.FloatTensor')
 N, D_in, H, D_out = 64, 4, 100, 3
 torch.manual_seed(7)
 
-data = load_iris()
 
-train_X, test_X, train_y, test_y = train_test_split(data.data, data.target, test_size=0.8,
-                                                    random_state = 5)
+dataPreprocessor = DataPreprocessor.Iris()
 
-train_X = torch.Tensor(train_X)
-test_X = torch.Tensor(test_X)
-train_y = torch.Tensor(train_y).long()
-test_y = torch.Tensor(test_y).long()
+train_X, test_X, train_y, test_y = dataPreprocessor.get_data()
 
 # the goal ('fitness') function to be maximized
 def evalOneMax(individual):
