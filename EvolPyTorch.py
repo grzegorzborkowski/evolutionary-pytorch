@@ -12,8 +12,7 @@ import EvolutionaryToolboxFactory
 
 import random
 
-device = torch.device('cuda')
-torch.set_default_tensor_type('torch.cuda.FloatTensor')
+torch.set_default_tensor_type('torch.FloatTensor')
 
 torch.manual_seed(7)
 
@@ -55,14 +54,8 @@ def main():
     toolbox = toolbox_factory.get_toolbox()
     toolbox.register("evaluate", evalOneMax)
 
-    # create an initial population of 300 individuals (where
-    # each individual is a list of integers)
     pop = toolbox.population(n=10)
 
-    # CXPB  is the probability with which two individuals
-    #       are crossed
-    #
-    # MUTPB is the probability for mutating an individual
     CXPB, MUTPB = 0.5, 0.2
 
     print("Start of evolution")
@@ -90,29 +83,8 @@ def main():
 
         # Select the next generation individuals
         offspring = toolbox.select(pop, len(pop))
-        # Clone the selected individuals
-        offspring = list(map(toolbox.clone, offspring))
 
-        # Apply crossover and mutation on the offspring
-        for child1, child2 in zip(offspring[::2], offspring[1::2]):
-
-            # cross two individuals with probability CXPB
-            if random.random() < CXPB:
-                toolbox.mate(child1, child2)
-
-                # fitness values of the children
-                # must be recalculated later
-                del child1.fitness.values
-                del child2.fitness.values
-
-        for mutant in offspring:
-
-            # mutate an individual with probability MUTPB
-            if random.random() < MUTPB:
-                toolbox.mutate(mutant)
-                del mutant.fitness.values
-
-        # Evaluate the individuals with an invalid fitness
+        offspring = algorithms.varAnd(pop, toolbox, CXPB, MUTPB)
         invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
         fitnesses = map(toolbox.evaluate, invalid_ind)
         for ind, fit in zip(invalid_ind, fitnesses):
