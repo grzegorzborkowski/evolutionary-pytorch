@@ -8,15 +8,20 @@ class Model(nn.Module):
     def __init__(self, number_of_layers):
         super(Model, self).__init__()
         self.number_of_layers = number_of_layers
+        self.layers = nn.ModuleList()
+        self.layers.append(nn.Linear(D_in, H))
+        for i in range(self.number_of_layers-1):
+            self.layers.append(nn.Linear(H,H))
+        self.layers.append(nn.Linear(H, D_out))
+
 
     def forward(self, x):
-        x = F.relu((nn.Linear(D_in, H)(x)))
-
+        y = x
+        i=0
         for i in range(self.number_of_layers):
-            x = F.relu(nn.Linear(H, H)(x))
-
-        x = F.softmax((nn.Linear(H, D_out)(x)))
-        return x
+            y = F.relu(self.layers[i](y))
+        y = F.softmax(self.layers[-1](y), dim=0)
+        return y
 
 
 class ModelFactory():
@@ -26,4 +31,5 @@ class ModelFactory():
         for elem in individual:
             if elem == 1:
                 ones += 1
+        ones = max(ones, 1) # we can't have all zeros
         return Model(ones)

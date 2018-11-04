@@ -14,20 +14,21 @@ import random
 
 torch.set_default_tensor_type('torch.FloatTensor')
 
-torch.manual_seed(7)
+#torch.manual_seed(7)
 
 dataPreprocessor = DataPreprocessor.Iris()
 train_X, test_X, train_y, test_y = dataPreprocessor.get_data()
 
 # the goal ('fitness') function to be maximized
 def evalOneMax(individual):
+    print ("Evaluatio individual", individual)
     model_factory = Models.ModelFactory()
     model = model_factory.get_model(individual)
     loss_fn = nn.CrossEntropyLoss()
 
-    learning_rate = 0.001
+    learning_rate = 0.1
 
-    for t in range(500):
+    for t in range(250):
         y_pred = model(train_X)
         loss = loss_fn(y_pred, train_y)
 

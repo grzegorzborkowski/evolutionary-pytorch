@@ -13,7 +13,7 @@ class EvolutionaryToolboxFactory():
         toolbox = base.Toolbox()
         toolbox.register("attr_bool", random.randint, 0, 1)
         toolbox.register("individual", tools.initRepeat, creator.Individual,
-                         toolbox.attr_bool, random.randint(1, 10))
+                         toolbox.attr_bool, random.randint(2, 3))
         toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
         toolbox.register("mate", tools.cxTwoPoint)
