@@ -1,16 +1,9 @@
 import torch
-import torch.nn as nn
-from sklearn.metrics import accuracy_score, precision_score, recall_score
-from sklearn.model_selection import train_test_split
-import torch.nn.functional as F
 from deap import base, creator, tools, algorithms
-import random
-import numpy
 import Models
 import DataPreprocessor
 import EvolutionaryToolboxFactory
 import ModelEvaluator
-import random
 
 torch.set_default_tensor_type('torch.FloatTensor')
 
