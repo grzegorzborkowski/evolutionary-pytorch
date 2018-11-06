@@ -4,22 +4,15 @@ from deap import tools
 import random
 import numpy
 
-def initInd(icls):
-    how_many = numpy.random.random_integers(2,10)
-    list = []
-    for i in range(how_many):
-        list.append(numpy.random.random_integers(0,1))
-    return icls(list)
-
 class EvolutionaryToolboxFactory():
 
     def get_toolbox(self):
-        creator.create("FitnessMax", base.Fitness, weights=(1.0,))
+        creator.create("FitnessMax", base.Fitness, weights=(1.0,)) # maximizing
         creator.create("Individual", list, fitness=creator.FitnessMax)
 
         toolbox = base.Toolbox()
 
-        toolbox.register("individual", initInd, icls=creator.Individual)
+        toolbox.register("individual", self.__initInd__, icls=creator.Individual)
         toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
         toolbox.register("mate", tools.cxTwoPoint)
@@ -35,3 +28,11 @@ class EvolutionaryToolboxFactory():
         toolbox.register("select", tools.selTournament, tournsize=3)
 
         return toolbox
+
+    def __initInd__(self, icls):
+        how_many = numpy.random.random_integers(2, 10)
+        list = []
+        for i in range(how_many):
+            list.append(numpy.random.random_integers(0, 1))
+        return icls(list)
+

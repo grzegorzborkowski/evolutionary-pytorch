@@ -9,53 +9,22 @@ import numpy
 import Models
 import DataPreprocessor
 import EvolutionaryToolboxFactory
-
+import ModelEvaluator
 import random
 
 torch.set_default_tensor_type('torch.FloatTensor')
 
-#torch.manual_seed(7)
-
-dataPreprocessor = DataPreprocessor.Iris()
-train_X, test_X, train_y, test_y = dataPreprocessor.get_data()
-input_layer_size = dataPreprocessor.get_input_layer_size()
-output_layer_size = dataPreprocessor.get_output_layer_size()
-
-# the goal ('fitness') function to be maximized
-def evalOneMax(individual):
-    print ("Evaluatio individual", individual)
-    model_factory = Models.ModelFactory(input_layer_size, output_layer_size)
-    model = model_factory.get_model(individual)
-    loss_fn = nn.CrossEntropyLoss()
-
-    learning_rate = 0.1
-
-    for t in range(250):
-        y_pred = model(train_X)
-        loss = loss_fn(y_pred, train_y)
-
-        if t % 25 == 0:
-            pass
-            #print (t, loss.item())
-
-        model.zero_grad()
-        loss.backward()
-
-        with torch.no_grad():
-            for param in model.parameters():
-                param.data -= learning_rate * param.grad
-
-    predict_out = model(test_X)
-    _, predict_y = torch.max(predict_out, 1)
-    accuracy = accuracy_score(test_y, predict_y)
-    print (accuracy)
-    return accuracy,
-
-
 def main():
+    dataPreprocessor = DataPreprocessor.Wine()
+    train_X, test_X, train_y, test_y = dataPreprocessor.get_data()
+    input_layer_size = dataPreprocessor.get_input_layer_size()
+    output_layer_size = dataPreprocessor.get_output_layer_size()
+
+    model_evaluator = ModelEvaluator.ModelEvaluator()
+
     toolbox_factory = EvolutionaryToolboxFactory.EvolutionaryToolboxFactory()
     toolbox = toolbox_factory.get_toolbox()
-    toolbox.register("evaluate", evalOneMax)
+    toolbox.register("evaluate", model_evaluator.evalOneMax)
 
     pop = toolbox.population(n=10)
 
@@ -64,7 +33,12 @@ def main():
     print("Start of evolution")
 
     # Evaluate the entire population
-    fitnesses = list(map(toolbox.evaluate, pop))
+    fitnesses = []
+    for el in pop:
+        print (el)
+        result = toolbox.evaluate(el, input_layer_size, output_layer_size, train_X, test_X, train_y, test_y)
+        fitnesses.append(result)
+
     print ("fitness", fitnesses)
     for ind, fit in zip(pop, fitnesses):
         print ("ind", "fit", ind, fit)
@@ -89,7 +63,12 @@ def main():
 
         offspring = algorithms.varAnd(pop, toolbox, CXPB, MUTPB)
         invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
-        fitnesses = map(toolbox.evaluate, invalid_ind)
+
+        fitnesses = []
+        for el in invalid_ind:
+            result = toolbox.evaluate(el, input_layer_size, output_layer_size, train_X, test_X, train_y, test_y)
+            fitnesses.append(result)
+
         for ind, fit in zip(invalid_ind, fitnesses):
             #print ("ind", "fit", ind, fit)
             ind.fitness.values = fit
