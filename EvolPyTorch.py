@@ -16,7 +16,7 @@ torch.set_default_tensor_type('torch.FloatTensor')
 
 #torch.manual_seed(7)
 
-dataPreprocessor = DataPreprocessor.Wine()
+dataPreprocessor = DataPreprocessor.Iris()
 train_X, test_X, train_y, test_y = dataPreprocessor.get_data()
 input_layer_size = dataPreprocessor.get_input_layer_size()
 output_layer_size = dataPreprocessor.get_output_layer_size()
@@ -59,7 +59,7 @@ def main():
 
     pop = toolbox.population(n=10)
 
-    CXPB, MUTPB = 0.5, 0.2
+    CXPB, MUTPB = 0.8, 0.5
 
     print("Start of evolution")
 

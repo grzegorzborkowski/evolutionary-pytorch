@@ -15,7 +15,6 @@ class Model(nn.Module):
             self.layers.append(nn.Linear(H,H))
         self.layers.append(nn.Linear(H, D_out))
 
-
     def forward(self, x):
         y = x
         i=0
@@ -26,7 +25,6 @@ class Model(nn.Module):
                 y = F.relu(self.layers[i](y))
         y = F.softmax(self.layers[-1](y), dim=0)
         return y
-
 
 class ModelFactory():
 
