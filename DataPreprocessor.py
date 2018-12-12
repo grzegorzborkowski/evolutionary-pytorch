@@ -1,4 +1,4 @@
-from sklearn.datasets import load_iris, load_wine
+from sklearn.datasets import load_iris, load_wine, load_digits
 from sklearn.model_selection import train_test_split
 import torch
 from abc import ABC
@@ -9,6 +9,7 @@ class AbstractScikitDataProcessor(ABC):
         self.data = data
         if data is not None:
             train_X, test_X, train_y, test_y = train_test_split(self.data.data, data.target, test_size=0.8, random_state=5)
+            
             self.train_y_raw = train_y
             self.train_X = torch.Tensor(train_X)
             self.test_X = torch.Tensor(test_X)
@@ -34,3 +35,7 @@ class Wine(AbstractScikitDataProcessor):
     def __init__(self):
         super().__init__(load_wine())
 
+class Mnist(AbstractScikitDataProcessor):
+
+    def __init__(self):
+        super().__init__(load_digits())
