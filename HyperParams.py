@@ -30,4 +30,4 @@ class HyperParams:
         self.file_path = args_params['file_path']
 
     def params_str(self):
-        return str(self.mutation_probability) + "," + str(self.crosover_probability) + "," + str(self.population_size) + "," + str(self.tournament_size) + "," + str(self.number_of_generations) + "," + str(self.max_number_of_layers) + "," + str(self.learning_rate) + "," + str(self.hidden_units) + "," + str(self.number_of_epochs) + ","
+        return str(self.mutation_probability) + "|" + str(self.crosover_probability) + "|" + str(self.population_size) + "|" + str(self.tournament_size) + "|" + str(self.number_of_generations) + "|" + str(self.max_number_of_layers) + "|" + str(self.learning_rate) + "|" + str(self.hidden_units) + "|" + str(self.number_of_epochs) + "|"

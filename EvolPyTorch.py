@@ -103,7 +103,7 @@ def main():
     else:
         with open(hyper_params.file_path, 'a') as file:
             file.write(hyper_params.params_str())
-            file.write(str(best_ind) + "," + str(best_ind.fitness.values)[1:][:-2] + "\n")
+            file.write(str(best_ind) + "|" + str(best_ind.fitness.values)[1:][:-2] + "\n")
 
 if __name__ == "__main__":
     main()

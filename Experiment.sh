@@ -1,8 +1,8 @@
-for mutation in 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
-do
-        for crossover in 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
+for mutation in 0.1 0.2 0.3 0.4 0.5
+    do
+        for crossover in 0.1 0.2 0.3 0.4 0.5 
         do
-            for population_size in 10 15 20 25 50
+            for population_size in 10 25 50
             do
                 for tournament in 1 3 5 7
                 do
