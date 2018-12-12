@@ -100,6 +100,10 @@ def main():
     best_ind = tools.selBest(pop, 1)[0]
     if DEBUG:
         print("Best individual is %s, %s" % (best_ind, best_ind.fitness.values))
+    else:
+        with open(hyper_params.file_path, 'a') as file:
+            file.write(hyper_params.params_str())
+            file.write(str(best_ind) + "," + str(best_ind.fitness.values)[1:][:-2] + "\n")
 
 if __name__ == "__main__":
     main()

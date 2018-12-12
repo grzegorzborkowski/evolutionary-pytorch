@@ -1,0 +1,1 @@
+mutation_probability,crosover_probability,population_size,tournament_size,number_of_generations,max_number_of_layers,learning_rate,hidden_units,number_of_epochs,best_accuracy,best_model

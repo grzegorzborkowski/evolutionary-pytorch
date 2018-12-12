@@ -13,6 +13,7 @@ class HyperParams:
         self.parser.add_argument('--learning_rate', type=float, default=0.001)
         self.parser.add_argument('--hidden_units', type=int, default=100)
         self.parser.add_argument('--number_of_epochs', type=int, default=250)
+        self.parser.add_argument('--file_path', type=str, default="results.csv")
 
     def parse_args(self):
         self.args = self.parser.parse_args()
@@ -26,4 +27,7 @@ class HyperParams:
         self.learning_rate = args_params['learning_rate']
         self.hidden_units = args_params['hidden_units']
         self.number_of_epochs = args_params['number_of_epochs']
+        self.file_path = args_params['file_path']
 
+    def params_str(self):
+        return str(self.mutation_probability) + "," + str(self.crosover_probability) + "," + str(self.population_size) + "," + str(self.tournament_size) + "," + str(self.number_of_generations) + "," + str(self.max_number_of_layers) + "," + str(self.learning_rate) + "," + str(self.hidden_units) + "," + str(self.number_of_epochs) + ","
