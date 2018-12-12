@@ -7,16 +7,14 @@ class ModelEvaluator():
 
     # TODO: refactor is so that is has fewer params
     @staticmethod
-    def evalOneMax(individual, input_layer_size, output_layer_size,
+    def evalOneMax(individual, number_of_epochs, learning_rate, input_layer_size, output_layer_size, hidden_size,
                    train_X, test_X, train_y, test_y):
         print("Evaluatio individual", individual)
-        model_factory = Models.ModelFactory(input_layer_size, output_layer_size)
+        model_factory = Models.ModelFactory(input_layer_size, output_layer_size, hidden_size)
         model = model_factory.get_model(individual)
         loss_fn = nn.CrossEntropyLoss()
 
-        learning_rate = 0.1
-
-        for t in range(250):
+        for t in range(number_of_epochs):
             y_pred = model(train_X)
             loss = loss_fn(y_pred, train_y)
 

@@ -4,10 +4,13 @@ import Models
 import DataPreprocessor
 import EvolutionaryToolboxFactory
 import ModelEvaluator
+import HyperParams
 
 torch.set_default_tensor_type('torch.FloatTensor')
 
 def main():
+    hyper_params = HyperParams.HyperParams()
+    hyper_params.parse_args()
     dataPreprocessor = DataPreprocessor.Wine()
     train_X, test_X, train_y, test_y = dataPreprocessor.get_data()
     input_layer_size = dataPreprocessor.get_input_layer_size()
@@ -16,12 +19,12 @@ def main():
     model_evaluator = ModelEvaluator.ModelEvaluator()
 
     toolbox_factory = EvolutionaryToolboxFactory.EvolutionaryToolboxFactory()
-    toolbox = toolbox_factory.get_toolbox()
+    toolbox = toolbox_factory.get_toolbox(hyper_params.mutation_probability, hyper_params.tournament_size, hyper_params.max_number_of_layers)
     toolbox.register("evaluate", model_evaluator.evalOneMax)
 
-    pop = toolbox.population(n=10)
+    pop = toolbox.population(n=hyper_params.population_size)
 
-    CXPB, MUTPB = 0.8, 0.5
+    CXPB, MUTPB = hyper_params.crosover_probability, hyper_params.mutation_probability
 
     print("Start of evolution")
 
@@ -29,7 +32,8 @@ def main():
     fitnesses = []
     for el in pop:
         print (el)
-        result = toolbox.evaluate(el, input_layer_size, output_layer_size, train_X, test_X, train_y, test_y)
+        result = toolbox.evaluate(el, hyper_params.number_of_epochs, 
+            hyper_params.learning_rate, input_layer_size, output_layer_size, hyper_params.hidden_units, train_X, test_X, train_y, test_y)
         fitnesses.append(result)
 
     print ("fitness", fitnesses)
@@ -46,7 +50,7 @@ def main():
     g = 0
 
     # Begin the evolution
-    while max(fits) < 5 and g < 5:
+    while g < hyper_params.number_of_generations:
         # A new generation
         g = g + 1
         print("-- Generation %i --" % g)
@@ -59,7 +63,8 @@ def main():
 
         fitnesses = []
         for el in invalid_ind:
-            result = toolbox.evaluate(el, input_layer_size, output_layer_size, train_X, test_X, train_y, test_y)
+            result = toolbox.evaluate(el, hyper_params.number_of_epochs,
+            hyper_params.learning_rate, input_layer_size, output_layer_size, hyper_params.hidden_units, train_X, test_X, train_y, test_y)
             fitnesses.append(result)
 
         for ind, fit in zip(invalid_ind, fitnesses):
