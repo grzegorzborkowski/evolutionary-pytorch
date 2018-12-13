@@ -1,6 +1,6 @@
-for mutation in 0.1 0.2 0.3 0.4 0.5
+for mutation in 0.2 0.3 0.4 0.5
     do
-        for crossover in 0.1 0.2 0.3 0.4 0.5 
+        for crossover in 0.5 
         do
             for population_size in 10 25 50
             do
